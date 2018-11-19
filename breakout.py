@@ -1,11 +1,8 @@
-import pygame, sys
+import pygame, sys, random
 from pygame.locals import *
+import breakout_constants as bc
 
-FPS = 30 # frames per second setting
-DISPLAY_WIDTH = 600
-DISPLAY_HEIGHT = 450
-DISPLAY_CAPTION = 'Color Switcher'
-
+"""
 COLORS = {
 	0	:	(255, 255, 255), # WHITE
 	1	:	( 0, 0,0), # BLACK
@@ -24,20 +21,26 @@ COLORS = {
 	14	:	( 0, 128, 128), # TEAL
 	15	:	(255, 255, 0) # YELLOW
 }
+"""
 
 def main():
 	pygame.init()
 	fpsClock = pygame.time.Clock()
-	counter = 0
-	numColors = len(COLORS)
+	#ball = pygame.Ball()
 
 	# set up the window
-	DISPLAYSURF = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), 0, 32)
-	pygame.display.set_caption(DISPLAY_CAPTION)
+	DISPLAYSURF = pygame.display.set_mode((bc.DISPLAY_WIDTH, bc.DISPLAY_HEIGHT), 0, 32)
+	pygame.display.set_caption(bc.DISPLAY_CAPTION)
+	initializeBallValues()
+	drawBall(DISPLAYSURF)
+	drawPaddle(DISPLAYSURF)
 
 	while True:
-		COLOR = updateBackgroundColor(counter, numColors)
-		DISPLAYSURF.fill(COLOR)
+		DISPLAYSURF.fill(bc.WHITE)
+		checkBallPath()
+		moveBall()
+		drawBall(DISPLAYSURF)
+		drawPaddle(DISPLAYSURF)
 		
 		for event in pygame.event.get():
 			if event.type == QUIT:
@@ -45,15 +48,47 @@ def main():
 				sys.exit()
 
 		pygame.display.update()
-		fpsClock.tick(FPS)
-		counter += 1
-		if counter%(numColors*10) == 0:
-			counter = 0
-		
-def updateBackgroundColor(counter, numColors):
-	c = (counter/10)%numColors
-	return COLORS[c]
-		
+		fpsClock.tick(bc.FPS)
+
+def initializeBallValues():
+	bc.ballVX = random.uniform(bc.ballVXMin, bc.ballVXMax)
+	if bool(random.getrandbits(1)):
+		bc.ballVX = -bc.ballVX
+	bc.ballVY = random.uniform(bc.ballVYMin, bc.ballVYMax)
+	if bool(random.getrandbits(1)):
+		bc.ballVY = -bc.ballVY
+
+def drawBall(DISPLAYSURF):
+	pygame.draw.circle(DISPLAYSURF, bc.ballColor, (int(bc.ballX), int(bc.ballY)), bc.ballRadius)
+
+def drawPaddle(DISPLAYSURF):
+	pygame.draw.rect(DISPLAYSURF, bc.paddleColor, (bc.paddleX, bc.paddleY, bc.paddleWidth, bc.paddleHeight))
+
+def checkBallPath():
+	checkDisplayEdges()
+	
+
+def moveBall():
+	bc.ballX += bc.ballVX
+	bc.ballY += bc.ballVY
+	
+def checkDisplayEdges():
+
+	# Check right edge
+	if (bc.ballX + bc.ballRadius + bc.ballVX >= bc.DISPLAY_WIDTH):
+		bc.ballVX = -bc.ballVX
+	
+	# Check left edge
+	if (bc.ballX - bc.ballRadius + bc.ballVX <= 0):
+		bc.ballVX = -bc.ballVX
+
+	# Check top edge
+	if (bc.ballY - bc.ballRadius + bc.ballVY <= 0):
+		bc.ballVY = -bc.ballVY
+	
+	# Check bottom edge
+	if (bc.ballY + bc.ballRadius + bc.ballVY >= bc.DISPLAY_HEIGHT):
+		bc.ballVY = -bc.ballVY
 	
 if __name__ == '__main__':
 	main()

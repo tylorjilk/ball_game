@@ -23,10 +23,29 @@ COLORS = {
 }
 """
 
+class Ball:
+	def __init__(self, x, y, vx, vy, col, rad):
+		self.x = x
+		self.y = y
+		self.vx = vx
+		self.vy = vy
+		self.color = col
+		self.radius = rad
+
+class Paddle:
+	def __init__(self, x, y, wid, ht, col):
+		self.x = x
+		self.y = y
+		self.width = wid
+		self.height = ht
+		self.color = col
+
+ball = Ball(bc.ballX, bc.ballY, bc.ballVX, bc.ballVY, bc.ballColor, bc.ballRadius)
+paddle = Paddle(bc.paddleX, bc.paddleY, bc.paddleWidth, bc.paddleHeight, bc.paddleColor)
+
 def main():
 	pygame.init()
 	fpsClock = pygame.time.Clock()
-	#ball = pygame.Ball()
 
 	# set up the window
 	DISPLAYSURF = pygame.display.set_mode((bc.DISPLAY_WIDTH, bc.DISPLAY_HEIGHT), 0, 32)
@@ -51,43 +70,54 @@ def main():
 		fpsClock.tick(bc.FPS)
 
 def initializeBallValues():
-	bc.ballVX = random.uniform(bc.ballVXMin, bc.ballVXMax)
+	ball.vx = random.uniform(bc.ballVXMin, bc.ballVXMax)
 	if bool(random.getrandbits(1)):
-		bc.ballVX = -bc.ballVX
-	bc.ballVY = random.uniform(bc.ballVYMin, bc.ballVYMax)
+		ball.vx = -ball.vx
+	ball.vy = random.uniform(bc.ballVYMin, bc.ballVYMax)
 	if bool(random.getrandbits(1)):
-		bc.ballVY = -bc.ballVY
+		ball.vy = -ball.vy
 
 def drawBall(DISPLAYSURF):
-	pygame.draw.circle(DISPLAYSURF, bc.ballColor, (int(bc.ballX), int(bc.ballY)), bc.ballRadius)
+	pygame.draw.circle(DISPLAYSURF, ball.color, (int(ball.x), int(ball.y)), ball.radius)
 
 def drawPaddle(DISPLAYSURF):
-	pygame.draw.rect(DISPLAYSURF, bc.paddleColor, (bc.paddleX, bc.paddleY, bc.paddleWidth, bc.paddleHeight))
+	pygame.draw.rect(DISPLAYSURF, paddle.color, (paddle.x, paddle.y, paddle.width, paddle.height))
 
 def checkBallPath():
 	checkDisplayEdges()
 	checkPaddleCollision()
 
 def moveBall():
-	bc.ballX += bc.ballVX
-	bc.ballY += bc.ballVY
+	ball.x += ball.vx
+	ball.y += ball.vy
 	
 def checkDisplayEdges():
 	# Check right edge
-	if (bc.ballX + bc.ballRadius + bc.ballVX >= bc.DISPLAY_WIDTH):
-		bc.ballVX = -bc.ballVX
+	if (ball.x + ball.radius + ball.vx >= bc.DISPLAY_WIDTH):
+		ball.vx = -ball.vx
 	# Check left edge
-	if (bc.ballX - bc.ballRadius + bc.ballVX <= 0):
-		bc.ballVX = -bc.ballVX
+	if (ball.x - ball.radius + ball.vx <= 0):
+		ball.vx = -ball.vx
 	# Check top edge
-	if (bc.ballY - bc.ballRadius + bc.ballVY <= 0):
-		bc.ballVY = -bc.ballVY
+	if (ball.y - ball.radius + ball.vy <= 0):
+		ball.vy = -ball.vy
 	# Check bottom edge
-	if (bc.ballY + bc.ballRadius + bc.ballVY >= bc.DISPLAY_HEIGHT):
-		bc.ballVY = -bc.ballVY
+	if (ball.y + ball.radius + ball.vy >= bc.DISPLAY_HEIGHT):
+		ball.vy = -ball.vy
 	
 def checkPaddleCollision():
-	
+	# Check top edge
+	if (ball.y + ball.radius <= paddle.y and ball.y + ball.radius + ball.vy >= paddle.y and ball.x + ball.vx <= paddle.x + paddle.width and ball.x + ball.vx >= paddle.x):
+		ball.vy = -ball.vy
+	# Check right edge
+	if (ball.x - ball.radius >= paddle.x + paddle.width and ball.x + ball.vx - ball.radius <= paddle.x + paddle.width and ball.y + ball.vy >= paddle.y and ball.y + ball.vy <= paddle.y + paddle.height):
+		ball.vx = -ball.vx
+	# Check left edge
+	if (ball.x + ball.radius <= paddle.x and ball.x + ball.vx + ball.radius >= paddle.x and ball.y + ball.vy >= paddle.y and ball.y + ball.vy <= paddle.y + paddle.height):
+		ball.vx = -ball.vx
+	# Check bottom edge
+	if (ball.y - ball.radius >= paddle.y + paddle.height and ball.y - ball.radius + ball.vy <= paddle.y + paddle.height and ball.x + ball.vx >= paddle.x and ball.x + ball.vx <= paddle.x + paddle.width):
+		ball.vy = -ball.vy
 
 if __name__ == '__main__':
 	main()

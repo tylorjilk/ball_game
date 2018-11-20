@@ -66,29 +66,28 @@ def drawPaddle(DISPLAYSURF):
 
 def checkBallPath():
 	checkDisplayEdges()
-	
+	checkPaddleCollision()
 
 def moveBall():
 	bc.ballX += bc.ballVX
 	bc.ballY += bc.ballVY
 	
 def checkDisplayEdges():
-
 	# Check right edge
 	if (bc.ballX + bc.ballRadius + bc.ballVX >= bc.DISPLAY_WIDTH):
 		bc.ballVX = -bc.ballVX
-	
 	# Check left edge
 	if (bc.ballX - bc.ballRadius + bc.ballVX <= 0):
 		bc.ballVX = -bc.ballVX
-
 	# Check top edge
 	if (bc.ballY - bc.ballRadius + bc.ballVY <= 0):
 		bc.ballVY = -bc.ballVY
-	
 	# Check bottom edge
 	if (bc.ballY + bc.ballRadius + bc.ballVY >= bc.DISPLAY_HEIGHT):
 		bc.ballVY = -bc.ballVY
 	
+def checkPaddleCollision():
+	
+
 if __name__ == '__main__':
 	main()

@@ -58,6 +58,7 @@ def main():
 		DISPLAYSURF.fill(bc.WHITE)
 		checkBallPath()
 		moveBall()
+		movePaddle()
 		drawBall(DISPLAYSURF)
 		drawPaddle(DISPLAYSURF)
 		
@@ -90,6 +91,14 @@ def checkBallPath():
 def moveBall():
 	ball.x += ball.vx
 	ball.y += ball.vy
+
+def movePaddle():
+	mousex, mousey = pygame.mouse.get_pos()
+	paddle.x = mousex - paddle.width / 2
+	if (paddle.x < 0):
+		paddle.x = 0
+	elif (paddle.x + paddle.width > bc.DISPLAY_WIDTH):
+		paddle.x = bc.DISPLAY_WIDTH - paddle.width
 	
 def checkDisplayEdges():
 	# Check right edge

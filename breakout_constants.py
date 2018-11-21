@@ -40,9 +40,9 @@ ballVXMin = 3				# Min x velocity magnitude
 ballVYMin = 5				# Min y velocity magnitude
 
 # Paddle constants
-paddleYOffset = 100			# Distance from bottom of paddle to bottom of screen
-paddleWidth = 500			# Width of paddle
-paddleHeight = 300			# Height of paddle
+paddleYOffset = 20			# Distance from bottom of paddle to bottom of screen
+paddleWidth = 100			# Width of paddle
+paddleHeight = 20			# Height of paddle
 paddleX = DISPLAY_WIDTH/2 - paddleWidth/2				# Initial x position
 paddleY = DISPLAY_HEIGHT - paddleYOffset - paddleHeight	# Initial y position
 paddleColor = FUCHSIA		# Color of the paddle
